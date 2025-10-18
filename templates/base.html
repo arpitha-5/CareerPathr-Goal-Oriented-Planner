@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPath – Goal Oriented Planner</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='carrer.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Simple Navigation -->
+    <nav class="simple-nav">
+        <div class="nav-content">
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <span class="brand-icon">🚀</span>
+                <span class="brand-text">CareerPath</span>
+            </a>
+            
+            <div class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ url_for('add_goal') }}" class="nav-link">Add Goal</a>
+                    <a href="{{ url_for('profile') }}" class="nav-link">Profile</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                {% else %}
+                   
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for msg in messages %}
+                        <div class="flash-message success">
+                            <div class="flash-icon">✓</div>
+                            <span class="flash-text">{{ msg }}</span>
+                            <button class="flash-close">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+   
+
+    <!-- JavaScript for interactions -->
+    <script>
+        // Flash message auto-dismiss
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateX(100%)';
+                    setTimeout(() => message.remove(), 300);
+                }, 5000);
+                
+                // Close button functionality
+                const closeBtn = message.querySelector('.flash-close');
+                closeBtn.addEventListener('click', () => {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateX(100%)';
+                    setTimeout(() => message.remove(), 300);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

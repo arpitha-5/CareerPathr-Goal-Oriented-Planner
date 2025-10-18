@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="dashboard-title-section">
+        <div class="dashboard-welcome">
+            <h1 class="dashboard-title">Welcome back, {{ current_user.username }}! 👋</h1>
+            <p class="dashboard-subtitle">Track your progress and achieve your career goals</p>
+        </div>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('add_goal') }}" class="btn add-goal-btn primary">
+                <span class="btn-icon">➕</span>
+                <span class="btn-text">Add New Goal</span>
+            </a>
+            <a href="{{ url_for('profile') }}" class="btn profile-btn secondary">
+                <span class="btn-icon">👤</span>
+                <span class="btn-text">Profile</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="profile-stats dashboard-stats">
+        <div class="stat-card card" data-stat="total">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-number">{{ goals|length }}</div>
+            <div class="stat-label">Total Goals</div>
+            <div class="stat-progress-bar">
+                <div class="stat-progress-fill" style="width: 100%"></div>
+            </div>
+        </div>
+        <div class="stat-card card" data-stat="completed">
+            <div class="stat-icon">✅</div>
+            <div class="stat-number">{{ completed_goals|length if completed_goals else 0 }}</div>
+            <div class="stat-label">Completed</div>
+            <div class="stat-progress-bar">
+                <div class="stat-progress-fill success" style="width: {{ (completed_goals|length / goals|length * 100) if goals|length > 0 else 0 }}%"></div>
+            </div>
+        </div>
+        <div class="stat-card card" data-stat="progress">
+            <div class="stat-icon">🚀</div>
+            <div class="stat-number">{{ in_progress_goals|length if in_progress_goals else 0 }}</div>
+            <div class="stat-label">In Progress</div>
+            <div class="stat-progress-bar">
+                <div class="stat-progress-fill warning" style="width: {{ (in_progress_goals|length / goals|length * 100) if goals|length > 0 else 0 }}%"></div>
+            </div>
+        </div>
+        <div class="stat-card card" data-stat="overdue">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-number">{{ overdue_goals|length if overdue_goals else 0 }}</div>
+            <div class="stat-label">Overdue</div>
+            <div class="stat-progress-bar">
+                <div class="stat-progress-fill danger" style="width: {{ (overdue_goals|length / goals|length * 100) if goals|length > 0 else 0 }}%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Goals Grid -->
+{% if goals %}
+    <div class="goals-grid">
+        {% for goal in goals %}
+        <div class="goal-card card" data-goal-id="{{ goal._id }}">
+            <div class="goal-card-header">
+                <div class="goal-header">
+                    <div>
+                        <h3 class="goal-title">{{ goal.title }}</h3>
+                        <span class="goal-category">{{ goal.category }}</span>
+                    </div>
+                    <div class="goal-actions-toggle">
+                        <button class="action-btn">⋯</button>
+                    </div>
+                </div>
+                
+                <div class="goal-description">
+                    <p>{{ goal.description }}</p>
+                </div>
+                
+                <div class="goal-meta">
+                    <span class="goal-deadline">
+                        <span class="meta-icon">📅</span>
+                        {{ goal.deadline.strftime('%b %d, %Y') if goal.deadline else 'No deadline' }}
+                    </span>
+                    <span class="goal-priority priority-{{ goal.priority.lower() if goal.priority else 'medium' }}">
+                        <span class="meta-icon">⚡</span>
+                        {{ goal.priority.title() if goal.priority else 'Medium' }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="goal-progress-section">
+                <div class="progress-header">
+                    <span class="progress-label">Progress</span>
+                    <span class="progress-percentage">{{ goal.progress or 0 }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ goal.progress or 0 }}%"></div>
+                </div>
+                <div class="progress-actions">
+                    <form method="POST" action="{{ url_for('update_progress', goal_id=goal._id) }}" class="progress-form">
+                        <input type="range" name="progress" min="0" max="100" value="{{ goal.progress or 0 }}" 
+                               class="progress-slider" onchange="this.form.submit()">
+                        <button type="submit" class="progress-update-btn" style="display: none;">Update</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Milestones Section -->
+            {% if goal.milestones %}
+            <div class="goal-milestones">
+                <h4 class="milestones-title">📋 Milestones</h4>
+                <ul class="milestones-list">
+                    {% for milestone in goal.milestones %}
+                    <li class="milestone-item">
+                        <span class="milestone-checkbox">☐</span>
+                        <span class="milestone-text">{{ milestone }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            <!-- Resources Section -->
+            {% if goal.resources %}
+            <div class="goal-resources">
+                <h4 class="resources-title">📚 Resources</h4>
+                <div class="resources-content">{{ goal.resources }}</div>
+            </div>
+            {% endif %}
+            
+            <div class="goal-actions">
+                <a href="{{ url_for('edit_goal', goal_id=goal._id) }}" 
+                   class="action-btn edit-btn">
+                    <span class="btn-icon">✏️</span>
+                    <span class="btn-text">Edit</span>
+                </a>
+                <a href="{{ url_for('delete_goal', goal_id=goal._id) }}" 
+                   class="action-btn delete-btn"
+                   onclick="return confirm('Are you sure you want to delete this goal?')">
+                    <span class="btn-icon">🗑️</span>
+                    <span class="btn-text">Delete</span>
+                </a>
+            </div>
+            
+            <div class="goal-card-overlay">
+                <div class="overlay-content">
+                    <h4>Quick Actions</h4>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" data-action="complete">
+                            <span>✅</span> Mark Complete
+                        </button>
+                        <button class="quick-action-btn" data-action="update">
+                            <span>📊</span> Update Progress
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card text-center">
+        <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">🎯</div>
+        <h2>No Goals Yet</h2>
+        <p class="mb-3" style="color: #666;">
+            Start your career journey by creating your first goal. Set clear objectives and track your progress along the way.
+        </p>
+        <a href="{{ url_for('add_goal') }}" class="btn">Create Your First Goal</a>
+    </div>
+{% endif %}
+
+<!-- Recent Activity -->
+{% if recent_activities %}
+<div class="card mt-3">
+    <h3>Recent Activity</h3>
+    <div class="recent-activities">
+        {% for activity in recent_activities %}
+        <div class="activity-item" style="padding: 1rem 0; border-bottom: 1px solid #eee;">
+            <div class="d-flex justify-between align-center">
+                <span>{{ activity.description }}</span>
+                <span style="color: #888; font-size: 0.9rem;">{{ activity.timestamp.strftime('%b %d') if activity.timestamp else 'Recently' }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

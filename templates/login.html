@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card card">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p class="auth-subtitle">Sign in to continue your career journey</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+            <div class="form-group">
+                <label for="email">📧 Email Address</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="Enter your email" 
+                       value="{{ request.form.email if request.form.email }}"
+                       class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">🔒 Password</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Enter your password"
+                       class="form-input">
+            </div>
+            
+            <button type="submit" class="btn w-full auth-submit">🚀 Sign In</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p class="auth-link-text">Don't have an account? 
+                <a href="{{ url_for('register') }}" class="auth-link">
+                    Create one here
+                </a>
+            </p>
+            
+            <a href="{{ url_for('index') }}" class="back-link">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

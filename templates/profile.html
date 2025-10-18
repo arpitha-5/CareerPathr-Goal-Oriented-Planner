@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Enhanced Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <span class="avatar-text">{{ current_user.username[0].upper() }}</span>
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-name">{{ current_user.username }}</h1>
+            <p class="profile-email">{{ current_user.email }}</p>
+            <div class="profile-badges">
+                <span class="badge member-badge">👑 Premium Member</span>
+                <span class="badge streak-badge">🔥 7 Day Streak</span>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <button class="btn edit-profile-btn" onclick="toggleEditProfile()">
+                <span class="btn-icon">✏️</span>
+                <span class="btn-text">Edit Profile</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Form (Hidden by default) -->
+    <div class="edit-profile-form" id="editProfileForm" style="display: none;">
+        <div class="card">
+            <h3>Edit Profile</h3>
+            <form method="POST" action="{{ url_for('update_profile') }}">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ current_user.username }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ current_user.email }}" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleEditProfile()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Overview -->
+    <div class="stats-overview">
+        <h2 class="section-title">📊 Your Progress Overview</h2>
+        <div class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">{{ stats.total_goals }}</div>
+                <div class="stat-label">Total Goals</div>
+                <div class="stat-trend">+2 this week</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number">{{ stats.completed_goals }}</div>
+                <div class="stat-label">Completed</div>
+                <div class="stat-trend">+1 this week</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-icon">🚀</div>
+                <div class="stat-number">{{ stats.in_progress_goals }}</div>
+                <div class="stat-label">In Progress</div>
+                <div class="stat-trend">Active</div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-icon">📈</div>
+                <div class="stat-number">{{ stats.avg_progress }}%</div>
+                <div class="stat-label">Avg Progress</div>
+                <div class="stat-trend">+5% this week</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals Breakdown -->
+    <div class="goals-breakdown">
+        <div class="breakdown-grid">
+            <!-- Categories Chart -->
+            <div class="card breakdown-card">
+                <h3 class="card-title">📂 Goals by Category</h3>
+                <div class="categories-list">
+                    {% for category, count in stats.categories.items() %}
+                    <div class="category-item">
+                        <span class="category-name">{{ category }}</span>
+                        <span class="category-count">{{ count }}</span>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: {{ (count / stats.total_goals * 100) if stats.total_goals > 0 else 0 }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Priority Chart -->
+            <div class="card breakdown-card">
+                <h3 class="card-title">⚡ Goals by Priority</h3>
+                <div class="priority-list">
+                    {% for priority, count in stats.priorities.items() %}
+                    <div class="priority-item priority-{{ priority.lower() }}">
+                        <span class="priority-name">{{ priority }}</span>
+                        <span class="priority-count">{{ count }}</span>
+                        <div class="priority-bar">
+                            <div class="priority-fill priority-{{ priority.lower() }}-fill" 
+                                 style="width: {{ (count / stats.total_goals * 100) if stats.total_goals > 0 else 0 }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Goals -->
+    <div class="recent-goals">
+        <h2 class="section-title">🕒 Recent Goals</h2>
+        {% if stats.recent_goals %}
+        <div class="recent-goals-grid">
+            {% for goal in stats.recent_goals %}
+            <div class="recent-goal-card card">
+                <div class="goal-header">
+                    <h4 class="goal-title">{{ goal.title }}</h4>
+                    <span class="goal-category">{{ goal.category }}</span>
+                </div>
+                <div class="goal-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ goal.progress or 0 }}%"></div>
+                    </div>
+                    <span class="progress-text">{{ goal.progress or 0 }}%</span>
+                </div>
+                <div class="goal-meta">
+                    <span class="goal-priority priority-{{ goal.priority.lower() if goal.priority else 'medium' }}">
+                        {{ goal.priority.title() if goal.priority else 'Medium' }}
+                    </span>
+                    <span class="goal-date">
+                        {{ goal.created_at.strftime('%b %d, %Y') if goal.created_at else 'Recently' }}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🎯</div>
+            <h3>No goals yet</h3>
+            <p>Start your journey by creating your first goal!</p>
+            <a href="{{ url_for('add_goal') }}" class="btn">Create Your First Goal</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Achievements -->
+    <div class="achievements">
+        <h2 class="section-title">🏆 Achievements</h2>
+        <div class="achievements-grid">
+            <div class="achievement-card completed">
+                <div class="achievement-icon">🎯</div>
+                <div class="achievement-title">First Goal</div>
+                <div class="achievement-desc">Created your first goal</div>
+            </div>
+            <div class="achievement-card completed">
+                <div class="achievement-icon">✅</div>
+                <div class="achievement-title">Goal Crusher</div>
+                <div class="achievement-desc">Completed 5 goals</div>
+            </div>
+            <div class="achievement-card locked">
+                <div class="achievement-icon">🔥</div>
+                <div class="achievement-title">Streak Master</div>
+                <div class="achievement-desc">30 day streak</div>
+            </div>
+            <div class="achievement-card locked">
+                <div class="achievement-icon">💎</div>
+                <div class="achievement-title">Diamond User</div>
+                <div class="achievement-desc">50 goals completed</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEditProfile() {
+    const form = document.getElementById('editProfileForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+
+<!-- Profile Information -->
+<div class="card">
+    <h3>Profile Information</h3>
+    <form method="POST" action="{{ url_for('profile') }}">
+        <div class="d-flex gap-1" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" 
+                       value="{{ current_user.name if current_user.name else '' }}"
+                       placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" 
+                       value="{{ current_user.email if current_user.email else '' }}"
+                       readonly style="background-color: #f5f5f5;">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" rows="3" 
+                      placeholder="Tell us about yourself and your career aspirations">{{ current_user.bio if current_user.bio else '' }}</textarea>
+        </div>
+        
+        <div class="d-flex gap-1" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="current_role">Current Role</label>
+                <input type="text" id="current_role" name="current_role" 
+                       value="{{ current_user.current_role if current_user.current_role else '' }}"
+                       placeholder="e.g., Software Developer">
+            </div>
+            <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" id="company" name="company" 
+                       value="{{ current_user.company if current_user.company else '' }}"
+                       placeholder="e.g., Tech Corp">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="linkedin">LinkedIn Profile</label>
+            <input type="url" id="linkedin" name="linkedin" 
+                   value="{{ current_user.linkedin if current_user.linkedin else '' }}"
+                   placeholder="https://linkedin.com/in/yourprofile">
+        </div>
+        
+        <button type="submit" class="btn">Update Profile</button>
+    </form>
+</div>
+
+<!-- Goal Categories Breakdown -->
+<div class="card">
+    <h3>Your Goal Categories</h3>
+    {% if category_stats %}
+        <div class="category-breakdown">
+            {% for category, count in category_stats.items() %}
+            <div class="category-item" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #eee;">
+                <span style="font-weight: 500;">{{ category }}</span>
+                <span class="goal-category">{{ count }} goal{{ 's' if count != 1 else '' }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #666; text-align: center; padding: 2rem;">No goals created yet. <a href="{{ url_for('add_goal') }}" style="color: #667eea;">Create your first goal</a> to see category breakdown.</p>
+    {% endif %}
+</div>
+
+<!-- Recent Achievements -->
+<div class="card">
+    <h3>Recent Achievements</h3>
+    {% if recent_achievements %}
+        <div class="achievements-list">
+            {% for achievement in recent_achievements %}
+            <div class="achievement-item" style="display: flex; align-items: center; padding: 1rem 0; border-bottom: 1px solid #eee;">
+                <div style="font-size: 1.5rem; margin-right: 1rem;">🏆</div>
+                <div>
+                    <div style="font-weight: 500;">{{ achievement.title }}</div>
+                    <div style="color: #666; font-size: 0.9rem;">Completed on {{ achievement.completed_date.strftime('%b %d, %Y') if achievement.completed_date else 'Recently' }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #666; text-align: center; padding: 2rem;">Complete some goals to see your achievements here!</p>
+    {% endif %}
+</div>
+
+<!-- Account Actions -->
+<div class="card">
+    <h3>Account Actions</h3>
+    <div class="account-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('change_password') }}" class="btn btn-secondary">Change Password</a>
+        <a href="{{ url_for('export_data') }}" class="btn btn-secondary">Export My Data</a>
+        <a href="{{ url_for('delete_account') }}" class="btn btn-secondary" 
+           onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')"
+           style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">Delete Account</a>
+    </div>
+</div>
+{% endblock %}
+

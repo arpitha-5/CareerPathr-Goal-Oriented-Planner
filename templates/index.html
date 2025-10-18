@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-background">
+        <div class="hero-gradient"></div>
+        <div class="hero-pattern"></div>
+    </div>
+    
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="badge-icon">🚀</span>
+            <span class="badge-text">Professional Career Planning</span>
+        </div>
+        
+        <h1 class="hero-title">
+            <span class="title-line">Transform Your</span>
+            <span class="title-line highlight">Career Journey</span>
+        </h1>
+        
+        <p class="hero-subtitle">
+            Achieve your professional goals with our intelligent goal-setting framework. 
+            Track progress, celebrate milestones, and build the career you deserve.
+        </p>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Goals Achieved</div>
+            </div>
+        </div>
+        
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn hero-btn primary">
+                <span class="btn-icon">🚀</span>
+                <span class="btn-text">Get Started</span>
+            </a>
+            <a href="{{ url_for('login') }}" class="btn hero-btn secondary">
+                <span class="btn-icon">🔑</span>
+                <span class="btn-text">Login</span>
+            </a>
+        </div>
+        
+        <div class="hero-trust">
+            <p class="trust-text">Trusted by professionals at</p>
+            <div class="trust-logos">
+                <div class="trust-logo">Google</div>
+                <div class="trust-logo">Microsoft</div>
+                <div class="trust-logo">Amazon</div>
+                <div class="trust-logo">Apple</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-header">
+        <h2 class="section-title">Why Choose CareerPath?</h2>
+        <p class="section-subtitle">Everything you need to accelerate your professional growth</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card professional-card">
+            <div class="feature-icon-wrapper">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-number">01</div>
+            </div>
+            <h3 class="feature-title">Smart Goal Setting</h3>
+            <p class="feature-description">Create and manage your career goals with our intuitive framework. Set deadlines, priorities, and track progress effortlessly.</p>
+            <div class="feature-link">
+                <span>Learn More</span>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+        
+        <div class="feature-card professional-card">
+            <div class="feature-icon-wrapper">
+                <div class="feature-icon">📊</div>
+                <div class="feature-number">02</div>
+            </div>
+            <h3 class="feature-title">Progress Tracking</h3>
+            <p class="feature-description">Visualize your progress with beautiful analytics. Stay motivated as you watch your goals come to life.</p>
+            <div class="feature-link">
+                <span>Learn More</span>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+        
+        <div class="feature-card professional-card">
+            <div class="feature-icon-wrapper">
+                <div class="feature-icon">🚀</div>
+                <div class="feature-number">03</div>
+            </div>
+            <h3 class="feature-title">Achievement Focused</h3>
+            <p class="feature-description">Break down big dreams into achievable milestones. Celebrate wins and learn from challenges.</p>
+            <div class="feature-link">
+                <span>Learn More</span>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+        
+        <div class="feature-card professional-card">
+            <div class="feature-icon-wrapper">
+                <div class="feature-icon">📈</div>
+                <div class="feature-number">04</div>
+            </div>
+            <h3 class="feature-title">Career Growth</h3>
+            <p class="feature-description">Build a roadmap for professional development. Track skills, certifications, and milestones.</p>
+            <div class="feature-link">
+                <span>Learn More</span>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+        
+        <div class="feature-card professional-card">
+            <div class="feature-icon-wrapper">
+                <div class="feature-icon">💡</div>
+                <div class="feature-number">05</div>
+            </div>
+            <h3 class="feature-title">Insights & Analytics</h3>
+            <p class="feature-description">Get valuable insights into goal completion patterns and identify improvement areas.</p>
+            <div class="feature-link">
+                <span>Learn More</span>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+        
+        <div class="feature-card professional-card">
+            <div class="feature-icon-wrapper">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-number">06</div>
+            </div>
+            <h3 class="feature-title">Secure & Private</h3>
+            <p class="feature-description">Your career goals are kept secure and private. Focus on growth without security concerns.</p>
+            <div class="feature-link">
+                <span>Learn More</span>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="cta-container">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Transform Your Career?</h2>
+            <p class="cta-description">
+                Join thousands of professionals who are already achieving their career goals with CareerPath. 
+                Start your journey today and unlock your potential.
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="{{ url_for('register') }}" class="btn cta-btn primary">
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">Get Started</span>
+                </a>
+                <a href="{{ url_for('login') }}" class="btn cta-btn secondary">
+                    <span class="btn-icon">🔑</span>
+                    <span class="btn-text">Login</span>
+                </a>
+            </div>
+            
+            <div class="cta-features">
+                <div class="cta-feature">
+                    <span class="feature-check">✓</span>
+                    <span>Free to get started</span>
+                </div>
+                <div class="cta-feature">
+                    <span class="feature-check">✓</span>
+                    <span>No credit card required</span>
+                </div>
+                <div class="cta-feature">
+                    <span class="feature-check">✓</span>
+                    <span>Track unlimited goals</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

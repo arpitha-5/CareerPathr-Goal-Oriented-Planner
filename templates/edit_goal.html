@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div class="text-center mb-3">
+            <h1>Edit Goal</h1>
+            <p style="color: #666;">Update your goal details and track progress</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('edit_goal', goal_id=goal._id) }}">
+            <div class="form-group">
+                <label for="title">Goal Title</label>
+                <input type="text" id="title" name="title" required 
+                       placeholder="e.g., Learn Python Programming" 
+                       value="{{ goal.title }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required 
+                          placeholder="Describe your goal in detail. What do you want to achieve and why is it important?">{{ goal.description }}</textarea>
+            </div>
+            
+            <div class="d-flex gap-1" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="Career Development" {{ 'selected' if goal.category == 'Career Development' }}>Career Development</option>
+                        <option value="Skills Learning" {{ 'selected' if goal.category == 'Skills Learning' }}>Skills Learning</option>
+                        <option value="Certification" {{ 'selected' if goal.category == 'Certification' }}>Certification</option>
+                        <option value="Networking" {{ 'selected' if goal.category == 'Networking' }}>Networking</option>
+                        <option value="Project Management" {{ 'selected' if goal.category == 'Project Management' }}>Project Management</option>
+                        <option value="Leadership" {{ 'selected' if goal.category == 'Leadership' }}>Leadership</option>
+                        <option value="Communication" {{ 'selected' if goal.category == 'Communication' }}>Communication</option>
+                        <option value="Technical Skills" {{ 'selected' if goal.category == 'Technical Skills' }}>Technical Skills</option>
+                        <option value="Personal Growth" {{ 'selected' if goal.category == 'Personal Growth' }}>Personal Growth</option>
+                        <option value="Other" {{ 'selected' if goal.category == 'Other' }}>Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" name="priority" required>
+                        <option value="">Select priority</option>
+                        <option value="High" {{ 'selected' if goal.priority == 'High' }}>High</option>
+                        <option value="Medium" {{ 'selected' if goal.priority == 'Medium' }}>Medium</option>
+                        <option value="Low" {{ 'selected' if goal.priority == 'Low' }}>Low</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="deadline">Target Deadline</label>
+                <input type="date" id="deadline" name="deadline" 
+                       value="{{ goal.deadline.strftime('%Y-%m-%d') if goal.deadline else '' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="progress">Current Progress (%)</label>
+                <input type="number" id="progress" name="progress" min="0" max="100" 
+                       placeholder="0" 
+                       value="{{ goal.progress or 0 }}">
+                <small style="color: #666; font-size: 0.9rem;">Update your current progress percentage</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="milestones">Key Milestones</label>
+                <textarea id="milestones" name="milestones" rows="3" 
+                          placeholder="Break down your goal into smaller milestones (one per line)">{{ '\n'.join(goal.milestones) if goal.milestones else '' }}</textarea>
+                <small style="color: #666; font-size: 0.9rem;">Enter each milestone on a new line</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="resources">Resources & Notes</label>
+                <textarea id="resources" name="resources" rows="3" 
+                          placeholder="List helpful resources, courses, books, or any notes">{{ goal.resources or '' }}</textarea>
+            </div>
+            
+            <div class="d-flex gap-1" style="justify-content: center; margin-top: 2rem;">
+                <button type="submit" class="btn">Update Goal</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
