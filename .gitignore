@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+venv/
+
+# MongoDB specific
+.mongodb/
+
+# IDE-specific files (e.g., VS Code)
+.vscode/
+
+# OS generated files
+.DS_Store
+thumbs.db
