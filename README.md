@@ -1,4 +1,5 @@
-CareerPathr – Goal Oriented Planner 🚀
+# 🎯 CareerPathr – Goal-Oriented Planner
+
 CareerPathr is an innovative, goal-oriented planner built with Python (Flask) and MongoDB. It helps users plan, track, and achieve their goals with a structured, user-friendly interface. The project is designed for students, professionals, and anyone looking to manage their personal or academic goals efficiently.
 
 🔹 Features
